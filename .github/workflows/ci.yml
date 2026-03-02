@@ -26,3 +26,38 @@ jobs:
 
       - name: Push image Docker
         run: docker push $DOCKER_HUB_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+
+  trivy:
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scan image with Trivy
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/examendevops:1.2.0
+          format: table
+          severity: HIGH,CRITICAL
+          exit-code: 0
+          vuln-type: os,library
+          ignore-unfixed: true
+
+  deploy:
+    needs: trivy
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: examendevops
+      IMAGE_TAG: 1.2.0
+      DOCKER_REGISTRY: docker.io/baayhacker
+
+    steps:
+      - name: Pull latest image
+        run: docker pull $DOCKER_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+
+      - name: Stop old container
+        run: docker stop $IMAGE_NAME || true
+
+      - name: Remove old container
+        run: docker rm $IMAGE_NAME || true
+
+      - name: Run new container
+        run: docker run -d -p 80:80 --name $IMAGE_NAME $DOCKER_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
