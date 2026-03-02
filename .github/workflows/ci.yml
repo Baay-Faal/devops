@@ -43,7 +43,7 @@ jobs:
 
   deploy:
     needs: trivy
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
       IMAGE_NAME: examendevops
       IMAGE_TAG: 1.2.0
