@@ -1,0 +1,28 @@
+# Temporary Claude files
+tmpclaude-*
+
+# Windows artifacts
+nul
+*.tmp
+Thumbs.db
+
+# macOS artifacts
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Node.js (if added in future)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
